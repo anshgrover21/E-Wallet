@@ -28,10 +28,10 @@ public class TrxCreateConsumer {
 
     @KafkaListener(topics = CommonConstant.TXN_INITIATED_TOPIC, groupId = "wallet-group")
     public void createWallet(String msg) throws JsonProcessingException {
-        JSONObject jsonObject = objectMapper.readValue(msg, JSONObject.class);
+        JSONObject jsonObject = objectMapper.readValue(msg , JSONObject.class);
 
        String reciever = (String)jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_RECEIVER);
-        Double amount =  (Double) jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_AMOUNT);
+        Double amount = (Double) (jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_AMOUNT));
         String sender =  (String)jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_SENDER);
         String id =  (String)jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_TXNID);
 
@@ -44,22 +44,22 @@ public class TrxCreateConsumer {
 
         if(userWalletSender==null){
             message = " Sender Does Not Exits ";
-            status = "Failed";
+            status = "FAILURE";
         }
         else if(userWalletReciever==null){
             message = " reciever Does Not Exits ";
-            status = "Failed";
+            status = "FAILURE";
 
         }
         else if(amount> userWalletSender.getBalance()){
             message=" Insufficient Funds ";
-            status="Failed";
+            status="FAILURE";
         }
         else{
             walletRepository.updateWallet(userWalletSender.getContact(),userWalletSender.getBalance() -amount);
             walletRepository.updateWallet(userWalletReciever.getContact(),userWalletReciever.getBalance()+amount);
             message="trx is in Success state ";
-            status="Success";
+            status="SUCCESS";
         }
 
 

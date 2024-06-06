@@ -30,7 +30,7 @@ public class Trx {
     private Double txnAmount;
 
     private String purpose;
-    @Enumerated
+    @Enumerated(value = EnumType.STRING)
     private TxnStatus txnStatus;
 
     @CreationTimestamp

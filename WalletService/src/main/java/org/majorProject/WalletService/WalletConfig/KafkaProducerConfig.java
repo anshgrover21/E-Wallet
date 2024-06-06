@@ -1,4 +1,4 @@
-package WalletConfig;
+package org.majorProject.WalletService.WalletConfig;
 
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

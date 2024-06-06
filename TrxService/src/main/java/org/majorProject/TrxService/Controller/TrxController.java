@@ -22,7 +22,7 @@ public class TrxController {
 
     @PostMapping("/createTrx")
     public Trx createTrx(@RequestParam("amount") double amount , @RequestParam("reciever") String reciever , @RequestParam("purpose") String purpose) throws JsonProcessingException {
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 //        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 //        Trx trx= Trx.builder().senderId(userDetails.getUsername()).receiverId(reciever)..build()
 
@@ -33,7 +33,7 @@ public class TrxController {
 
     @GetMapping("/getTrx")
     public List<Trx> getTrx(@RequestParam("Page") int page, @RequestParam("size") int size){
-        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
+        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
        return trxService.getTrx(userDetails.getUsername(),page,size);
 
     }

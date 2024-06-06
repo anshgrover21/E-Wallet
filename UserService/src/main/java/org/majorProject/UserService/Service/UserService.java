@@ -85,4 +85,5 @@ public class UserService implements UserDetailsService {
     public User getUser(String contact) {
         return userRepo.findByPhoneNo(contact);
     }
+
 }

@@ -18,6 +18,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,8 +27,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class TrxService implements UserDetailsService {
@@ -51,10 +54,13 @@ public class TrxService implements UserDetailsService {
         // of service one to service two
         HttpEntity request =new HttpEntity<>(header);
 
-        JSONObject jsonObject = restTemplate.exchange("http://localhost:8020/user/get?contact="+contact, HttpMethod.GET,request,JSONObject.class).getBody();
-
+        JSONObject jsonObject = restTemplate.exchange("http://localhost:8080/user/get?contact="+contact, HttpMethod.GET,request,JSONObject.class).getBody();
+        System.out.println(jsonObject);
         // ye spring security wala user hai
-        User user = new User((String)jsonObject.get("username"), (String)jsonObject.get("password"), (Collection<? extends GrantedAuthority>) jsonObject.get("authority")); // YE GALAT HAI
+        List<LinkedHashMap<String ,String>> l =  ( List<LinkedHashMap<String ,String>>)jsonObject.get("authorities");
+            List<GrantedAuthority> list =    l.stream().map(x -> x.get("authority")).map(x -> new SimpleGrantedAuthority(x)).collect(Collectors.toList());
+
+        User user = new User((String)jsonObject.get("phoneNo"),(String)jsonObject.get("password"), list); // YE GALAT HAI
 
         return user;
     }
@@ -108,7 +114,9 @@ public class TrxService implements UserDetailsService {
             String message = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_MESSAGE);
            String trxStatus = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_STATUS);
 
-        trxRepo.updateTrx(trxid,message,trxStatus);
+        TxnStatus txnStatus = TxnStatus.valueOf(trxStatus);
+        System.out.println(txnStatus);
+        trxRepo.updateTrx(trxid,message,txnStatus);
     }
 
 
