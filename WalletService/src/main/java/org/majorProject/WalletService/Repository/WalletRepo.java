@@ -16,4 +16,6 @@ public interface WalletRepo extends JpaRepository<UserWallet,Integer> {
     @Modifying
     @Query("UPDATE UserWallet w SET w.balance=:balance WHERE w.contact=:contact")
     void updateWallet(@Param("contact") String contact, @Param("balance") double balance);
+
+
 }

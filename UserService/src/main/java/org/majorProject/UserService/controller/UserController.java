@@ -1,11 +1,15 @@
 package org.majorProject.UserService.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.Valid;
+import org.jose4j.json.internal.json_simple.JSONObject;
 import org.majorProject.UserService.Model.User;
 import org.majorProject.UserService.Request.UserRequest;
 import org.majorProject.UserService.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
 
     @PostMapping("/create")
@@ -25,6 +32,19 @@ public class UserController {
     public User getUser(@RequestParam("contact") String contact)
     {
         return userService.getUser(contact);
+    }
+
+    @GetMapping("/getUserWallet")
+    public String getUserWallet(@RequestParam("contact") String contact) throws JsonProcessingException {
+
+//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        JSONObject jsonObject= new JSONObject();
+        jsonObject  =  userService.getUserWallet(contact);
+
+        String  s = objectMapper.writeValueAsString(jsonObject);
+        return s;
+
+
     }
 
 

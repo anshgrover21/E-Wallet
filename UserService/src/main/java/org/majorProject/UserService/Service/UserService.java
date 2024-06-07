@@ -20,6 +20,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.majorProject.TrxService.UserIdentifier;
+import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -38,7 +41,14 @@ public class UserService implements UserDetailsService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    private final UserMapper userMapper;
+
+//    private  WebClient webClient;
+
+    @Autowired
+    private WebClient webClient;
+
+
+    private  UserMapper userMapper;
 
     @Autowired
     public UserService(UserMapper userMapper) {
@@ -72,6 +82,7 @@ public class UserService implements UserDetailsService {
 //        kafkaTemplate.send(CommonConstant.USER_CREATION_TOPIC ,objectMapper.writeValueAsString(jsonObject));
 
         return user;
+
     }
 
 
@@ -85,5 +96,16 @@ public class UserService implements UserDetailsService {
     public User getUser(String contact) {
         return userRepo.findByPhoneNo(contact);
     }
+
+    public JSONObject getUserWallet(String username) {
+
+        String url =  "http://localhost:7002/Wallet/getWallet?contact=" + username;
+
+       JSONObject clientResponse = webClient.get().uri(url).retrieve().bodyToMono(JSONObject.class).block();
+
+        return clientResponse;
+
+    }
+
 
 }
