@@ -24,8 +24,6 @@ public class TrxCreateConsumer {
 
 
 
-    //wallet-group se read kia
-
     @KafkaListener(topics = CommonConstant.TXN_INITIATED_TOPIC, groupId = "wallet-group")
     public void createWallet(String msg) throws JsonProcessingException {
         JSONObject jsonObject = objectMapper.readValue(msg , JSONObject.class);
@@ -35,7 +33,7 @@ public class TrxCreateConsumer {
         String sender =  (String)jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_SENDER);
         String id =  (String)jsonObject.get(CommonConstant.TXN_INITIATED_TOPIC_TXNID);
 
-        // updating the trx amount in wallet
+
 
       UserWallet userWalletSender = walletRepository.findByContact(sender);
         UserWallet userWalletReciever = walletRepository.findByContact(reciever);
@@ -61,9 +59,6 @@ public class TrxCreateConsumer {
             message="trx is in Success state ";
             status="SUCCESS";
         }
-
-
-        //again it will give trx service as msg and status and trx id with kafka this time becoming producer
 
         JSONObject jsonObject1= new JSONObject();
         jsonObject1.put(CommonConstant.TXN_UPDATED_TOPIC_MESSAGE,message);

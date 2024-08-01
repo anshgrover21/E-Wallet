@@ -13,7 +13,6 @@ import org.majorProject.UserService.Model.User;
 @NoArgsConstructor
 public class UserRequest {
 
-    //at valid ke sath use hoga ye
     @NotBlank(message = "email Cannot Be blank")
     private String email;
 
@@ -34,9 +33,6 @@ public class UserRequest {
     private String userIdentifierValue;
 
     public User toUser(){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        Student user =  (Student) authentication.getPrincipal();
-
         return User.builder().
                 name(this.getName())
                 .email(this.getEmail())

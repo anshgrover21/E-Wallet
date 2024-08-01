@@ -10,7 +10,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @Configuration
 public class KafkaConfig {
 
-    @Bean//here setting up an encoding schemes
+    @Bean
     public PasswordEncoder getPSEncode(){
         return new BCryptPasswordEncoder();
     }

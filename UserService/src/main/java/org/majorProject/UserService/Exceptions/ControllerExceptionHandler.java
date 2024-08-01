@@ -16,8 +16,6 @@ public class ControllerExceptionHandler {
     }
 
 
-    // IN THIS WE ARE USING DIRECT exception class , this is used to handle global exception that is server has some problem
-
 //        @ExceptionHandler(value =Exception.class)
 //    public ResponseEntity<Object> handle(Exception e){
 //        return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

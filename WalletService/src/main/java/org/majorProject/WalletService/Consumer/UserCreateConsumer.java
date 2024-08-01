@@ -22,8 +22,6 @@ public class UserCreateConsumer {
 
 
 
-    //wallet-group se read kia
-
     @KafkaListener(topics = CommonConstant.USER_CREATION_TOPIC, groupId = "wallet-group")
     public void createWallet(String msg) throws JsonProcessingException {
 

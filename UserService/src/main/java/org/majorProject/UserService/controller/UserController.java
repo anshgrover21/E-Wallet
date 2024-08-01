@@ -8,8 +8,6 @@ import org.majorProject.UserService.Model.User;
 import org.majorProject.UserService.Request.UserRequest;
 import org.majorProject.UserService.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -24,7 +22,7 @@ public class UserController {
 
     @PostMapping("/create")
     public User createUser(@RequestBody  @Valid  UserRequest userRequest) throws JsonProcessingException {
-       return  userService.createUser(userRequest);
+        return  userService.createUser(userRequest);
     }
 
     @GetMapping("/get")
@@ -36,7 +34,6 @@ public class UserController {
     @GetMapping("/getUserWallet")
     public String getUserWallet(@RequestParam("contact") String contact) throws JsonProcessingException {
 
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         JSONObject jsonObject= new JSONObject();
         jsonObject  =  userService.getUserWallet(contact);
 

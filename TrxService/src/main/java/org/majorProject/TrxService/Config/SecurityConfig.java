@@ -28,11 +28,11 @@ public class SecurityConfig {
         return authenticationProvider;
     }
 
-    @Bean// this is for authorisation , we are basically authorising it completely
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(authorize -> authorize
-//                        .requestMatchers("/trx/createTrx").hasAnyAuthority("ADMIN", "USER", "SERVICE") // we are using authorities internally in my user so we have to make it has Authority
+//                        .requestMatchers("/trx/createTrx").hasAnyAuthority("ADMIN", "USER", "SERVICE")
                         .anyRequest().permitAll() // this means other than above request are also authenticated
                 ).formLogin(withDefaults()).httpBasic(withDefaults()).csrf(csrf -> csrf.disable());;
         return http.build();

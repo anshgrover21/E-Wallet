@@ -2,7 +2,6 @@ package org.majorProject.TrxService.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.persistence.GeneratedValue;
 import org.jose4j.json.internal.json_simple.JSONObject;
 import org.majorProject.TrxService.CommonConstant;
 import org.majorProject.TrxService.Model.Trx;
@@ -26,7 +25,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
@@ -43,15 +41,9 @@ public class TrxService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String contact) throws UsernameNotFoundException {
 
-        // yha pe mujhe verify krna h user ko contact se jo hme authentication ke tym milega contact dalne me
-        //isko manage krne ke lie ek trick follow krni hai ki hm get request marenge apnee user service pr
-
         HttpHeaders header = new HttpHeaders();
         header.setBasicAuth("trx-service","trx-service");
-        // basically ham yha kya kr rhe hai ki ham directly enter nhi kr paaenge get method me because vo secured h to hame kuch aisa krna hoga ki hm get method me aajae or fir vha se hm
-//ham user ke data base ko access krke name fetch krle data base se isse hame user se password mangne ki need hi ni pdegi direcctly data base access krpaenge get method se , to uske lie hamne already
-        // data base me ek trx-service id and trx-service password dal dia or iski auth rkhdi service , so jb bhi service ke through hm get ko hit krenenge ham directly phch jaenge data base pe is process ko khte hai onboarding
-        // of service one to service two
+
         HttpEntity request =new HttpEntity<>(header);
 
         JSONObject jsonObject = restTemplate.exchange("http://localhost:8080/user/get?contact="+contact, HttpMethod.GET,request,JSONObject.class).getBody();
@@ -59,9 +51,9 @@ public class TrxService implements UserDetailsService {
         // ye spring security wala user hai
         List<LinkedHashMap<String ,String>> l
                 =  ( List<LinkedHashMap<String ,String>>)jsonObject.get("authorities");
-            List<GrantedAuthority> list =    l.stream().map(x -> x.get("authority")).map(x -> new SimpleGrantedAuthority(x)).collect(Collectors.toList());
+        List<GrantedAuthority> list =    l.stream().map(x -> x.get("authority")).map(x -> new SimpleGrantedAuthority(x)).collect(Collectors.toList());
 
-        User user = new User((String)jsonObject.get("phoneNo"),(String)jsonObject.get("password"), list); // YE GALAT HAI
+        User user = new User((String)jsonObject.get("phoneNo"),(String)jsonObject.get("password"), list);
 
         return user;
     }
@@ -84,10 +76,7 @@ public class TrxService implements UserDetailsService {
                 txnStatus(TxnStatus.INITIATED).
                 build();
 
-         trxRepo.save(txn);
-
-         //pushing data to topic and sending the details to the wallet so that wallet update the details
-        // we cam either do it with kafka or we can do it with htpp post request as we did before
+        trxRepo.save(txn);
 
         JSONObject jsonObject = new JSONObject();
         jsonObject.put(CommonConstant.TXN_INITIATED_TOPIC_RECEIVER,reciever);
@@ -104,22 +93,18 @@ public class TrxService implements UserDetailsService {
 
     }
 
-
-    //trx-group se read kia
-    // topic is USER_Update_topic
     @KafkaListener(topics = CommonConstant.TXN_UPDATED_TOPIC, groupId = "trx-group")
     public void createWallet(String msg) throws JsonProcessingException {
-            JSONObject jsonObject =new JSONObject();
-          jsonObject=  objectMapper.readValue(msg,JSONObject.class);
-            String trxid = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_TXNID);
-            String message = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_MESSAGE);
-           String trxStatus = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_STATUS);
+        JSONObject jsonObject =new JSONObject();
+        jsonObject=  objectMapper.readValue(msg,JSONObject.class);
+        String trxid = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_TXNID);
+        String message = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_MESSAGE);
+        String trxStatus = (String) jsonObject.get(CommonConstant.TXN_UPDATED_TOPIC_STATUS);
 
         TxnStatus txnStatus = TxnStatus.valueOf(trxStatus);
         System.out.println(txnStatus);
         trxRepo.updateTrx(trxid,message,txnStatus);
     }
-
 
     public List<Trx> getTrx(String username, int page, int size) {
 

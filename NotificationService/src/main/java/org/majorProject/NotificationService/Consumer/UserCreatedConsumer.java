@@ -11,12 +11,12 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
-@Service  // isme generally buisness logic hota h to hm ise service me dalte h
+@Service
 public class UserCreatedConsumer {
 
     @Autowired
     private ObjectMapper objectMapper;
-    //group is same as what we have discussed in kafka it is a consumer group whcih contains multiple consume in it
+
 
     @Autowired
     private JavaMailSender sender;

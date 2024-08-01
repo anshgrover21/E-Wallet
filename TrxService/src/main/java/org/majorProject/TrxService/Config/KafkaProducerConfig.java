@@ -12,8 +12,6 @@ import java.util.Map;
 
 public class KafkaProducerConfig {
 
-    // this is manual way of creating producer by creating producer factory we  can do it by spring in application property also
-
     public ProducerFactory<String, String> getProducerFactory() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(

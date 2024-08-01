@@ -15,9 +15,6 @@ import java.util.Map;
 @Configuration
 public class KafkaConsumerConfig {
 
-
-    // this is manual way of creating producer by creating producer factory we  can do it by spring in application property also
-
     @Bean
     public ConsumerFactory<String, String> consumerFactory() {
         Map<String, Object> props = new HashMap<>();

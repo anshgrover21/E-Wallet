@@ -23,12 +23,7 @@ public class TrxController {
     @PostMapping("/createTrx")
     public Trx createTrx(@RequestParam("amount") double amount , @RequestParam("reciever") String reciever , @RequestParam("purpose") String purpose) throws JsonProcessingException {
         UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-//        UserDetails userDetails = (UserDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
-//        Trx trx= Trx.builder().senderId(userDetails.getUsername()).receiverId(reciever)..build()
-
-
         return trxService.createTrx(userDetails.getUsername(), reciever, amount, purpose);
-
     }
 
     @GetMapping("/getTrx")
