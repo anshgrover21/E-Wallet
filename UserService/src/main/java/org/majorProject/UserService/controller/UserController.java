@@ -22,7 +22,6 @@ public class UserController {
     @Autowired
     private ObjectMapper objectMapper;
 
-
     @PostMapping("/create")
     public User createUser(@RequestBody  @Valid  UserRequest userRequest) throws JsonProcessingException {
        return  userService.createUser(userRequest);
@@ -43,7 +42,6 @@ public class UserController {
 
         String  s = objectMapper.writeValueAsString(jsonObject);
         return s;
-
 
     }
 

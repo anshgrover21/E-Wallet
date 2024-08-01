@@ -54,20 +54,16 @@ public class UserService implements UserDetailsService {
     public UserService(UserMapper userMapper) {
         this.userMapper = userMapper;
     }
-
     public User createUser(UserRequest userRequest) throws JsonProcessingException {
-
                User user =     userMapper.userRequestToUser(userRequest);
-               System.out.println(user);
+//               System.out.println(user);
 //        User user = userRequest.toUser();
         user.setAuthorities(userAuthority);
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepo.save(user);
         // i have to send notification once user is created using kafka, it is as similar as we connect redis
         //isko json_simple se mvn dependency se import kia h
-
         JSONObject jsonObject = new JSONObject();
-
         jsonObject.put(CommonConstant.USER_CREATION_TOPIC_NAME, StringUtils.isEmpty(user.getName())?"User":user.getName());
         jsonObject.put(CommonConstant.USER_CREATION_TOPIC_EMAIL, user.getEmail());
 //        jsonObject.put(CommonConstant.USER_CREATION_TOPIC_NAME, StringUtils.isEmpty(user.getName())?"User":user.getName());
@@ -76,11 +72,8 @@ public class UserService implements UserDetailsService {
         jsonObject.put(CommonConstant.USER_CREATION_TOPIC_USERIDENTIFIER_VALUE, user.getUserIdentifierValue());
         jsonObject.put(CommonConstant.USER_CREATION_TOPIC_PHONE_NO, user.getPhoneNo());
 
-
         kafkaTemplate.send(CommonConstant.USER_CREATION_TOPIC ,objectMapper.writeValueAsString(jsonObject));
-
 //        kafkaTemplate.send(CommonConstant.USER_CREATION_TOPIC ,objectMapper.writeValueAsString(jsonObject));
-
         return user;
 
     }
@@ -92,11 +85,9 @@ public class UserService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepo.findByPhoneNo(username);
     }
-
     public User getUser(String contact) {
         return userRepo.findByPhoneNo(contact);
     }
-
     public JSONObject getUserWallet(String username) {
 
         String url =  "http://localhost:7002/Wallet/getWallet?contact=" + username;

@@ -27,7 +27,7 @@ public class UserServiceApplication implements CommandLineRunner {
 		User user = User.builder().name("trx-service").password(passwordEncoder.encode("trx-service")).phoneNo("trx-service").authorities("SERVICE").userType(UserType.SERVICE).build();
 
 //		User user = User.builder().
-//				phoneNo("txn-service").
+//				phoneNo("txn-service")."
 //				password(passwordEncoder.encode("txn-service")).
 //				authority("SERVICE").userType(UserType.SERVICE).
 //				build();

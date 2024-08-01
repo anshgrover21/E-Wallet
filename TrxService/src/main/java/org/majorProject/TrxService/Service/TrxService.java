@@ -57,7 +57,8 @@ public class TrxService implements UserDetailsService {
         JSONObject jsonObject = restTemplate.exchange("http://localhost:8080/user/get?contact="+contact, HttpMethod.GET,request,JSONObject.class).getBody();
         System.out.println(jsonObject);
         // ye spring security wala user hai
-        List<LinkedHashMap<String ,String>> l =  ( List<LinkedHashMap<String ,String>>)jsonObject.get("authorities");
+        List<LinkedHashMap<String ,String>> l
+                =  ( List<LinkedHashMap<String ,String>>)jsonObject.get("authorities");
             List<GrantedAuthority> list =    l.stream().map(x -> x.get("authority")).map(x -> new SimpleGrantedAuthority(x)).collect(Collectors.toList());
 
         User user = new User((String)jsonObject.get("phoneNo"),(String)jsonObject.get("password"), list); // YE GALAT HAI

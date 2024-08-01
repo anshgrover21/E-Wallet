@@ -33,8 +33,7 @@ public class SecurityConfig {
 
     @Bean// this is for authorisation , we are basically authorising it completely
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
+        http.authorizeHttpRequests(authorize -> authorize
 //                        .requestMatchers("/User/create").hasAuthority("ADMIN") // we are using authorities internally in my user so we have to make it has Authority
                                 .requestMatchers("/user/get/**").hasAnyAuthority("ADMIN", "USER", "SERVICE")
                                 .anyRequest().permitAll() // this means other than above request are also authenticated
